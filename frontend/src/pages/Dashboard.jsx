@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import "../App.css"; // Keep using your existing CSS
+import "../App.css";
 
 // Backend upload URL
-const BACKEND_UPLOAD = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/upload/`
-  : "http://127.0.0.1:8000/upload/";
+const BACKEND_ANALYZE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/analyze-chair`
+  : "http://127.0.0.1:8000/analyze-chair";
 
 function Dashboard() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -13,17 +13,12 @@ function Dashboard() {
   const [status, setStatus] = useState(
     "No design started. Upload an image, draw a sketch, or choose a template to begin."
   );
-  const [resultText, setResultText] = useState("");
-  const [details, setDetails] = useState([]);
+  const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
-  const [segments, setSegments] = useState([]);
-  const [result, setResult] = useState(null);
 
   const [chatHistory, setChatHistory] = useState([]);
   const [chatInput, setChatInput] = useState("");
-
-  const linkedData = result?.linked_data || [];
 
   useEffect(() => {
     if (!file) {
@@ -38,7 +33,6 @@ function Dashboard() {
   function openModal() {
     setFile(null);
     setModalOpen(true);
-    setResultText("");
   }
 
   function closeModal() {
@@ -61,45 +55,32 @@ function Dashboard() {
   async function upload() {
     if (!file) return setStatus("Please choose a file first.");
     setLoading(true);
-    setStatus("Uploading...");
+    setStatus("Analyzing chair...");
 
     try {
       const form = new FormData();
-      form.append("file", file, file.name);
+      form.append("file", file);
 
-      const resp = await fetch(BACKEND_UPLOAD, { method: "POST", body: form });
+      const resp = await fetch(BACKEND_ANALYZE, {
+        method: "POST",
+        body: form,
+      });
+
       if (!resp.ok) {
         const text = await resp.text();
-        setStatus(`Upload failed: ${resp.status} ${text}`);
+        setStatus(`Error: ${resp.status} ${text}`);
+        setResultData(null);
         return;
       }
 
       const data = await resp.json();
-      if (data.error) {
-        setStatus(`Error: ${data.error}`);
-        return;
-      }
-
-      setStatus(
-        `Last uploaded: ${file.name} (${data.text_result?.total_words || 0} words)`
-      );
-      setResultText(data.text_result?.full_text || "No text found");
-      setDetails(
-        Array.isArray(data.text_result?.details)
-          ? data.text_result.details
-          : []
-      );
-      setSegments(
-        Array.isArray(data.segments_result?.segments)
-          ? data.segments_result.segments
-          : []
-      );
-
-      setResult(data);
+      setResultData(data);
+      setStatus("Chair analyzed successfully!");
       setModalOpen(false);
     } catch (err) {
-      setStatus(`Upload error: ${err.message || err}`);
       console.error(err);
+      setStatus(`Upload failed: ${err.message}`);
+      setResultData(null);
     } finally {
       setLoading(false);
     }
@@ -156,60 +137,114 @@ function Dashboard() {
 
           {preview && <img src={preview} alt="preview" className="preview" />}
 
-          <div id="result" className="output">
-            {resultText}
-          </div>
+          {/* ANALYSIS RESULTS DISPLAY */}
+          {resultData && (
+            <div className="analysis-output" style={{ marginTop: "20px" }}>
+              <h3 style={{ marginBottom: "12px" }}>🔍 Analysis Results</h3>
 
-          {details && details.length > 0 && (
-            <div className="details">
-              <strong>Details</strong>
-              <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
-                {details.slice(0, 20).map((d, i) => (
-                  <div key={i} className="detail-item">
-                    {d.text}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+              {/* Identified Chair Type */}
+              {resultData.identified_type && (
+                <div style={{ marginBottom: "20px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "6px" }}>
+                  <h4 style={{ marginBottom: "8px", color: "#333" }}>Detected Chair Type:</h4>
+                  <p style={{ fontWeight: "bold", fontSize: "1.2em", color: "#1976d2", margin: 0 }}>
+                    {resultData.identified_type}
+                  </p>
+                </div>
+              )}
 
-          {segments && segments.length > 0 && (
-            <div className="segments">
-              <strong>SAM Segments</strong>
-              {segments.map((s, i) => (
-                <div className="segment-card" key={i}>
-                  <div style={{ fontSize: 13, marginBottom: 6 }}>
-                    <strong>{s.component_type}</strong>
-                  </div>
-                  <div style={{ fontSize: 12, color: "#556" }}>
-                    <strong>BBox:</strong> [{s.bbox.join(", ")}]
-                  </div>
-                  <div style={{ fontSize: 12, color: "#556" }}>
-                    <strong>Area:</strong> {s.area} &nbsp;{" "}
-                    <strong>IOU:</strong> {s.predicted_iou.toFixed(2)}
+              {/* Canonical Parts */}
+              {resultData.canonical_parts && resultData.canonical_parts.length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                  <h4 style={{ marginBottom: "10px" }}>Detected Components:</h4>
+                  <ul style={{ margin: "0 0 0 20px", padding: 0 }}>
+                    {resultData.canonical_parts.map((part, i) => (
+                      <li key={i} style={{ marginBottom: "6px" }}>
+                        {part}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Linked Data / Measurements */}
+              {resultData.linked_data && resultData.linked_data.length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                  <h4 style={{ marginBottom: "10px" }}>Linked Measurements:</h4>
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    {resultData.linked_data.map((item, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: "8px",
+                          backgroundColor: "#fafafa",
+                          borderLeft: "3px solid #1976d2",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        <strong>{item.text}</strong> → {item.segment_class}{" "}
+                        <span style={{ color: "#666", fontSize: "0.9em" }}>
+                          (distance: {item.distance.toFixed(2)})
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {linkedData.length > 0 && (
-            <div className="linked-data">
-              <strong>Linked Measurements</strong>
-              <div style={{ marginTop: 8 }}>
-                {linkedData.map((item, i) => (
-                  <div className="linked-item" key={i}>
-                    {item.text} → {item.segment_class}{" "}
-                    <span style={{ color: "#889", marginLeft: 8 }}>
-                      ({item.distance.toFixed(2)})
-                    </span>
+              {/* SAM Segments */}
+              {resultData.segments && resultData.segments.length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                  <h4 style={{ marginBottom: "10px" }}>Detected Segments (SAM):</h4>
+                  <div style={{ display: "grid", gap: "10px" }}>
+                    {resultData.segments.map((segment, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: "10px",
+                          backgroundColor: "#fafafa",
+                          border: "1px solid #ddd",
+                          borderRadius: "6px",
+                        }}
+                      >
+                        <div style={{ fontWeight: "bold", marginBottom: "6px" }}>
+                          {segment.component_type}
+                        </div>
+                        <div style={{ fontSize: "0.9em", color: "#666" }}>
+                          <strong>BBox:</strong> [{segment.bbox.join(", ")}]
+                        </div>
+                        <div style={{ fontSize: "0.9em", color: "#666" }}>
+                          <strong>Area:</strong> {segment.area} | <strong>IOU:</strong>{" "}
+                          {segment.predicted_iou.toFixed(2)}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {/* Raw JSON Response */}
+              <details style={{ marginTop: "20px" }}>
+                <summary style={{ cursor: "pointer", fontWeight: "bold", color: "#1976d2" }}>
+                  View Raw JSON Response
+                </summary>
+                <pre
+                  style={{
+                    marginTop: "12px",
+                    padding: "12px",
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "6px",
+                    overflow: "auto",
+                    fontSize: "0.85em",
+                  }}
+                >
+                  {JSON.stringify(resultData, null, 2)}
+                </pre>
+              </details>
             </div>
           )}
         </div>
 
+        {/* Chat Window */}
         <div className="chat-window">
           {chatHistory.map((msg, i) => (
             <div key={i} className={`chat-message ${msg.sender}`}>
@@ -218,6 +253,7 @@ function Dashboard() {
           ))}
         </div>
 
+        {/* Chat Input */}
         <div className="chatbar">
           <input
             className="chat-input"
@@ -234,6 +270,7 @@ function Dashboard() {
         </div>
       </main>
 
+      {/* Upload Modal */}
       {isModalOpen && (
         <div className="modal-backdrop" role="dialog">
           <div className="modal panel-card">

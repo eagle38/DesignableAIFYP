@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "part_name": "Headrest",
+        "confidence": 0.994,
+        "normalized_bbox_xywh": [
+            0.3127,
+            0.1783,
+            0.4644,
+            0.2915
+        ],
+        "mask_pixel_area_proxy": 46403
+    },
+    {
+        "id": 2,
+        "part_name": "Seat",
+        "confidence": 0.9902,
+        "normalized_bbox_xywh": [
+            0.5763,
+            0.5646,
+            0.7016,
+            0.2302
+        ],
+        "mask_pixel_area_proxy": 45541
+    },
+    {
+        "id": 3,
+        "part_name": "Eames_lounge",
+        "confidence": 0.972,
+        "normalized_bbox_xywh": [
+            0.2738,
+            0.4699,
+            0.3097,
+            0.104
+        ],
+        "mask_pixel_area_proxy": 6836
+    },
+    {
+        "id": 4,
+        "part_name": "Eames_lounge",
+        "confidence": 0.9622,
+        "normalized_bbox_xywh": [
+            0.7137,
+            0.4024,
+            0.2567,
+            0.1177
+        ],
+        "mask_pixel_area_proxy": 11305
+    },
+    {
+        "id": 5,
+        "part_name": "Backrest",
+        "confidence": 0.9589,
+        "normalized_bbox_xywh": [
+            0.3767,
+            0.4439,
+            0.4812,
+            0.3033
+        ],
+        "mask_pixel_area_proxy": 30609
+    },
+    {
+        "id": 6,
+        "part_name": "Eames_base",
+        "confidence": 0.9575,
+        "normalized_bbox_xywh": [
+            0.539,
+            0.7819,
+            0.6201,
+            0.206
+        ],
+        "mask_pixel_area_proxy": 28920
+    },
+    {
+        "id": 7,
+        "part_name": "AH_Label",
+        "confidence": 0.2853,
+        "normalized_bbox_xywh": [
+            0.787,
+            0.0512,
+            0.1572,
+            0.0368
+        ],
+        "mask_pixel_area_proxy": 2847
+    }
+]

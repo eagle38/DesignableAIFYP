@@ -1,0 +1,32 @@
+names:
+- 5_Star_Base
+- AH_Label
+- Armrest
+- BH_Label
+- Backrest
+- Base
+- Caster_Wheel
+- Control_Mechanism
+- DA_Label
+- Eames_base
+- Eames_lounge
+- Headrest
+- Leg_Structure
+- Lumbar_Support
+- SD_Label
+- SH_Label
+- SW_Label
+- Seat
+- Wing_Flange
+- egg_armrest
+- sofa_armrest
+nc: 21
+roboflow:
+  license: CC BY 4.0
+  project: designableai-miotn
+  url: https://universe.roboflow.com/designableai/designableai-miotn/dataset/3
+  version: 3
+  workspace: designableai
+test: test/images
+train: train/images
+val: valid/images

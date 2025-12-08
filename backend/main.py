@@ -1,93 +1,63 @@
-from fastapi import FastAPI, UploadFile, File
+import uvicorn
+import tempfile
+import os
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-import shutil
-import os
+from yolov8_inference import run_inference_on_image
+from chair_classification import classify_json
 
-from utils.image_processing import extract_text, extract_segments, visualize_segments, link_measurements_to_segments
+app = FastAPI(title="DesignableAI - Chair Analyzer")
 
-
-app = FastAPI()
-
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins (adjust in production)
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
-@app.get("/")
-async def root():
-    return {"message": "OCR API is running", "endpoint": "/upload/"}
-
-
-@app.post("/upload/")
-async def upload_image(file: UploadFile = File(...)):
-    """Upload image, extract text, and detect segments"""
+@app.post("/analyze-chair")
+async def analyze_chair(file: UploadFile = File(...)):
+    # Accept only images (basic check)
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image.")
     
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    # Save uploaded image temporarily
+    try:
+        suffix = os.path.splitext(file.filename)[1] or ".jpg"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            temp_path = tmp.name
+            content = await file.read()
+            tmp.write(content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {e}")
     
     try:
-        # Save uploaded file
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # Run YOLO inference (this returns the list of detection dicts)
+        detections = run_inference_on_image(temp_path, conf_thresh=0.25)
         
-        print(f"File saved: {file_path}")
+        # Optionally: save raw detections for debugging
+        # with open("last_raw_detections.json","w") as f: json.dump(detections,f,indent=2)
         
-        # Extract text using OCR
-        print("Starting text extraction...")
-        text_result = extract_text(file_path)
-        if isinstance(text_result, dict):
-            print(f"Text extraction result: {text_result.get('status', 'unknown')}")
-        else:
-            print(f"Extracted {len(text_result)} text items")
-
+        # Pass the detection list directly into the classifier
+        result = classify_json(detections, image_id=file.filename)
         
-        # Extract segments using CV
-        print("Starting segmentation...")
-        segments_result = extract_segments(file_path)
-        print(f"Segmentation result: {segments_result.get('status', 'unknown')}")
+        # Clean up the temporary image
+        try:
+            os.remove(temp_path)
+        except:
+            pass
         
-        # Don't visualize in API - it blocks
-        visualize_segments(file_path, segments_result)
-        
-        # Link measurements to nearest segments
-        print("Linking measurements to segments...")
-        linked_data = link_measurements_to_segments(
-            text_result if isinstance(text_result, list) else text_result.get("details", []),
-            segments_result.get("segments", [])
-        )
-
-        print(f"Linked {len(linked_data)} measurements to segments")
-
-        # Combine results
-        result = {
-            "text_result": text_result,
-            "segments_result": segments_result,
-            "linked_data": linked_data,   # <-- added this line
-        }
-
         return JSONResponse(content=result)
-    
     except Exception as e:
-        import traceback
-        error_detail = traceback.format_exc()
-        print(f"ERROR in upload endpoint: {error_detail}")
-        return JSONResponse(
-            status_code=500,
-            content={"error": str(e), "detail": error_detail}
-        )
-    
-    finally:
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            print(f"File deleted: {file_path}")
+        # cleanup and return error
+        try:
+            os.remove(temp_path)
+        except:
+            pass
+        raise HTTPException(status_code=500, detail=f"Inference or classification failed: {e}")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run("main_app:app", host="0.0.0.0", port=8000, reload=True)
