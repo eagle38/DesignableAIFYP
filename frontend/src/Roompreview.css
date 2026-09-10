@@ -1,0 +1,442 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RoomPreview.css — DesignableAI Room Visualizer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── OVERLAY ───────────────────────────────────────────────────────────── */
+.rp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0f0e0c;
+  display: flex;
+  flex-direction: column;
+  font-family: 'DM Mono', monospace;
+  color: #f5f1eb;
+  animation: rp-in 0.25s ease-out;
+}
+@keyframes rp-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── HEADER ────────────────────────────────────────────────────────────── */
+.rp-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  height: 52px;
+  background: rgba(15,14,12,0.95);
+  border-bottom: 1px solid rgba(245,241,235,0.06);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.rp-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: #f5f1eb;
+  flex-shrink: 0;
+}
+.rp-dot { color: #c8602a; }
+
+.rp-title {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,241,235,0.35);
+  flex-shrink: 0;
+}
+
+/* Room selector */
+.rp-seg {
+  display: flex;
+  gap: 2px;
+  background: rgba(245,241,235,0.04);
+  border: 1px solid rgba(245,241,235,0.07);
+  border-radius: 3px;
+  padding: 3px;
+}
+.rp-seg-btn {
+  padding: 5px 14px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245,241,235,0.45);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.rp-seg-btn:hover { color: rgba(245,241,235,0.75); }
+.rp-seg-btn.active {
+  background: rgba(245,241,235,0.08);
+  color: #f5f1eb;
+}
+
+/* Theme buttons */
+.rp-themes {
+  display: flex;
+  gap: 6px;
+  margin-left: 4px;
+}
+.rp-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(245,241,235,0.08);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245,241,235,0.4);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.rp-theme-btn:hover { border-color: rgba(245,241,235,0.2); color: rgba(245,241,235,0.7); }
+.rp-theme-btn.active {
+  border-color: rgba(200,96,42,0.4);
+  background: rgba(200,96,42,0.08);
+  color: #c8602a;
+}
+.rp-theme-preview {
+  display: flex;
+  border-radius: 2px;
+  overflow: hidden;
+  width: 18px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1px solid rgba(245,241,235,0.1);
+}
+.rp-theme-preview div {
+  flex: 1;
+}
+
+.rp-close {
+  margin-left: auto;
+  padding: 6px 16px;
+  border: 1px solid rgba(245,241,235,0.12);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245,241,235,0.5);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.rp-close:hover { border-color: rgba(200,96,42,0.3); color: #c8602a; }
+
+/* ── MAIN AREA ─────────────────────────────────────────────────────────── */
+.rp-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── LOADING ───────────────────────────────────────────────────────────── */
+.rp-loading {
+  display: flex; align-items: center; justify-content: center;
+  height: 100vh; background: #0f0e0c;
+  color: rgba(245,241,235,0.35);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+/* ── ROOM BACKGROUND ───────────────────────────────────────────────────── */
+.rp-room-bg {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #1a1714;
+}
+
+/* Real photo background */
+.rp-room-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Room label badge */
+.rp-room-badge {
+  position: absolute;
+  top: 16px; left: 16px;
+  background: rgba(15,14,12,0.65);
+  border: 1px solid rgba(245,241,235,0.1);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,241,235,0.5);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+/* Chair canvas — sits on top of photo */
+.rp-chair-canvas {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  width: 100% !important;
+  height: 100% !important;
+}
+.rp-chair-canvas.grabbing { cursor: grabbing; }
+
+/* Drag hint */
+.rp-drag-hint {
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15,14,12,0.7);
+  border: 1px solid rgba(245,241,235,0.08);
+  border-radius: 100px;
+  padding: 6px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em;
+  color: rgba(245,241,235,0.35);
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  animation: rp-hint-pulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+}
+@keyframes rp-hint-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ── ROOM THUMBNAILS ───────────────────────────────────────────────────── */
+.rp-room-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rp-room-thumb {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(245,241,235,0.02);
+  border: 1px solid rgba(245,241,235,0.06);
+  border-radius: 3px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.rp-room-thumb:hover {
+  background: rgba(245,241,235,0.05);
+  border-color: rgba(245,241,235,0.12);
+}
+.rp-room-thumb.active {
+  border-color: rgba(200,96,42,0.35);
+  background: rgba(200,96,42,0.06);
+}
+.rp-room-thumb img {
+  width: 48px; height: 32px;
+  object-fit: cover; border-radius: 2px;
+  flex-shrink: 0;
+  border: 1px solid rgba(245,241,235,0.06);
+}
+.rp-room-thumb span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.08em;
+  color: rgba(245,241,235,0.45);
+  text-transform: uppercase;
+}
+.rp-room-thumb.active span { color: #c8602a; }
+
+/* ── CONTROLS SIDEBAR ──────────────────────────────────────────────────── */
+.rp-controls {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 1px solid rgba(245,241,235,0.05);
+  background: rgba(15,14,12,0.7);
+  padding: 16px 14px;
+  overflow-y: auto;
+}
+.rp-controls::-webkit-scrollbar { width: 3px; }
+.rp-controls::-webkit-scrollbar-thumb { background: rgba(245,241,235,0.06); border-radius: 2px; }
+
+.rp-ctrl-section {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(245,241,235,0.04);
+}
+.rp-ctrl-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+.rp-ctrl-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245,241,235,0.3);
+  margin-bottom: 10px;
+}
+
+/* Size slider */
+.rp-size-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rp-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: rgba(245,241,235,0.08);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.rp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #f5f1eb;
+  border: 2px solid #0f0e0c;
+  box-shadow: 0 0 0 1px rgba(245,241,235,0.2);
+  cursor: grab;
+}
+.rp-slider::-webkit-slider-thumb:hover { background: #c8602a; }
+.rp-slider:active::-webkit-slider-thumb { cursor: grabbing; background: #c8602a; }
+.rp-size-val {
+  font-size: 0.6rem;
+  color: rgba(245,241,235,0.5);
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Flip button */
+.rp-flip-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(245,241,235,0.08);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245,241,235,0.45);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.rp-flip-btn:hover { border-color: rgba(245,241,235,0.2); color: rgba(245,241,235,0.7); }
+.rp-flip-btn.active {
+  border-color: rgba(200,96,42,0.3);
+  background: rgba(200,96,42,0.06);
+  color: #c8602a;
+}
+
+/* Position quick-grid (3x3) */
+.rp-pos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: rgba(245,241,235,0.02);
+  border: 1px solid rgba(245,241,235,0.04);
+  border-radius: 3px;
+}
+.rp-pos-btn {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245,241,235,0.03);
+  border: 1px solid rgba(245,241,235,0.06);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.12s;
+  padding: 8px;
+}
+.rp-pos-btn:hover {
+  background: rgba(200,96,42,0.1);
+  border-color: rgba(200,96,42,0.25);
+}
+.rp-pos-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(245,241,235,0.3);
+  transition: background 0.12s;
+}
+.rp-pos-btn:hover .rp-pos-dot { background: #c8602a; }
+
+.rp-pos-hint {
+  font-size: 0.52rem;
+  color: rgba(245,241,235,0.2);
+  letter-spacing: 0.06em;
+  font-style: italic;
+}
+
+/* Theme detail */
+.rp-theme-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: rgba(245,241,235,0.7);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+.rp-theme-swatches {
+  display: flex;
+  gap: 6px;
+}
+.rp-theme-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(245,241,235,0.1);
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rp-controls { width: 190px; }
+  .rp-themes { display: none; } /* move to sidebar on small screens */
+}
+@media (max-width: 768px) {
+  .rp-header { height: auto; padding: 10px 16px; gap: 10px; }
+  .rp-main { flex-direction: column; }
+  .rp-controls {
+    width: 100%;
+    max-height: 180px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-top: 1px solid rgba(245,241,235,0.05);
+    padding: 10px 14px;
+    gap: 16px;
+    overflow-x: auto;
+  }
+  .rp-ctrl-section {
+    flex-shrink: 0;
+    min-width: 160px;
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}

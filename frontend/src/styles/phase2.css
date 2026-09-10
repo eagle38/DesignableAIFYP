@@ -1,0 +1,396 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SculptStudio.css — DesignableAI 3D Sculpt Studio (Phase 2)
+   Warm dark palette · Cormorant Garamond + DM Mono
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ss-root {
+  width: 100vw; height: 100vh;
+  display: flex; flex-direction: column;
+  background: #0f0e0c;
+  color: #f5f1eb;
+  font-family: 'DM Mono', monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── HEADER ────────────────────────────────────────────────────────────── */
+.ss-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 24px; height: 48px;
+  background: linear-gradient(to bottom, rgba(15,14,12,0.95), rgba(15,14,12,0.75));
+  border-bottom: 1px solid rgba(245,241,235,0.04);
+  z-index: 10; flex-shrink: 0;
+}
+
+.ss-back {
+  background: none; border: 1px solid rgba(245,241,235,0.1);
+  color: rgba(245,241,235,0.5); padding: 5px 12px; border-radius: 2px;
+  font-family: 'DM Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s;
+}
+.ss-back:hover { border-color: rgba(245,241,235,0.25); color: #f5f1eb; }
+
+.ss-logo {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  font-weight: 300; color: #f5f1eb;
+}
+.ss-dot { color: #c8602a; }
+
+.ss-title {
+  font-size: 0.65rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(245,241,235,0.4);
+  margin-left: 4px;
+}
+
+/* ── TOOL BAR (Phase 2) ───────────────────────────────────────────────── */
+.ss-tool-bar {
+  display: flex; gap: 2px;
+  margin-left: 16px;
+  padding: 3px;
+  background: rgba(245,241,235,0.03);
+  border: 1px solid rgba(245,241,235,0.06);
+  border-radius: 3px;
+}
+.ss-tool-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  padding: 5px 10px;
+  min-width: 52px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: rgba(245,241,235,0.4);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ss-tool-btn span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.ss-tool-btn:hover {
+  background: rgba(245,241,235,0.04);
+  color: rgba(245,241,235,0.7);
+}
+.ss-tool-btn.active {
+  background: rgba(200,96,42,0.12);
+  border-color: rgba(200,96,42,0.3);
+  color: #c8602a;
+}
+
+
+.ss-header-actions { display: flex; gap: 6px; margin-left: auto; }
+
+.ss-hbtn {
+  padding: 5px 12px; border-radius: 2px;
+  border: 1px solid rgba(245,241,235,0.08); background: transparent;
+  color: rgba(245,241,235,0.4); font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s;
+}
+.ss-hbtn:hover { border-color: rgba(245,241,235,0.2); color: rgba(245,241,235,0.7); }
+.ss-hbtn.danger { border-color: rgba(200,96,42,0.25); color: rgba(200,96,42,0.6); }
+.ss-hbtn.danger:hover { background: rgba(200,96,42,0.08); color: #c8602a; }
+
+/* ── BODY ──────────────────────────────────────────────────────────────── */
+.ss-body {
+  flex: 1; display: flex; overflow: hidden; min-height: 0;
+}
+
+/* ── LEFT: INVENTORY ───────────────────────────────────────────────────── */
+.ss-inventory {
+  width: 240px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  border-right: 1px solid rgba(245,241,235,0.04);
+  background: rgba(15,14,12,0.6);
+  overflow-y: auto;
+  padding: 12px 10px;
+}
+.ss-inventory::-webkit-scrollbar { width: 3px; }
+.ss-inventory::-webkit-scrollbar-thumb { background: rgba(245,241,235,0.06); border-radius: 2px; }
+
+.ss-inv-head {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem; font-weight: 300;
+  color: rgba(245,241,235,0.55);
+  padding: 4px 8px 14px;
+  border-bottom: 1px solid rgba(245,241,235,0.04);
+  margin-bottom: 8px;
+}
+
+.ss-inv-cat { margin-bottom: 2px; }
+.ss-inv-cat-btn {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 10px; border-radius: 2px;
+  border: none; background: rgba(245,241,235,0.015);
+  cursor: pointer; transition: all 0.15s;
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(245,241,235,0.5);
+}
+.ss-inv-cat-btn:hover { background: rgba(245,241,235,0.03); color: rgba(245,241,235,0.75); }
+.ss-inv-cat-btn.open { background: rgba(245,241,235,0.03); color: #c8602a; }
+.ss-inv-chev { color: rgba(245,241,235,0.3); transition: transform 0.25s; }
+.ss-inv-chev.open { transform: rotate(180deg); color: #c8602a; }
+
+.ss-inv-items {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; padding: 8px 4px 12px;
+  animation: ss-items-in 0.2s ease-out;
+}
+@keyframes ss-items-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+.ss-inv-item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 6px 10px;
+  border: 1px solid rgba(245,241,235,0.04); border-radius: 3px;
+  background: rgba(245,241,235,0.01);
+  cursor: pointer; transition: all 0.15s;
+}
+.ss-inv-item:hover {
+  background: rgba(245,241,235,0.03);
+  border-color: rgba(200,96,42,0.2);
+  transform: translateY(-1px);
+}
+.ss-inv-item:active { transform: translateY(0) scale(0.97); }
+
+.ss-inv-item-icon {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
+.ss-inv-blob {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c9b29f 0%, #8a7564 60%, #5a4a3a 100%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.1);
+}
+
+.ss-inv-item-name {
+  font-size: 0.55rem; letter-spacing: 0.06em;
+  color: rgba(245,241,235,0.5); text-align: center;
+}
+
+/* ── PLACED PARTS LIST ─────────────────────────────────────────────────── */
+.ss-placed {
+  margin-top: 16px; padding-top: 12px;
+  border-top: 1px solid rgba(245,241,235,0.04);
+}
+.ss-placed-head {
+  font-size: 0.55rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(245,241,235,0.3);
+  padding: 0 8px 8px;
+}
+.ss-placed-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 7px 10px; border-radius: 2px;
+  border: 1px solid transparent; background: transparent;
+  color: rgba(245,241,235,0.5); font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; cursor: pointer; transition: all 0.12s;
+  text-align: left;
+}
+.ss-placed-item:hover { background: rgba(245,241,235,0.02); color: rgba(245,241,235,0.7); }
+.ss-placed-item.selected {
+  background: rgba(200,96,42,0.06); border-color: rgba(200,96,42,0.15);
+  color: #c8602a;
+}
+.ss-placed-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #b8a18e; flex-shrink: 0;
+}
+.ss-placed-item.selected .ss-placed-dot { background: #c8602a; }
+.ss-placed-type {
+  font-size: 0.5rem; color: rgba(245,241,235,0.25);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-left: auto;
+}
+
+/* ── CENTER: 3D CANVAS ─────────────────────────────────────────────────── */
+.ss-canvas {
+  flex: 1; position: relative; overflow: hidden;
+  min-height: 0;
+}
+.ss-canvas canvas {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+/* ── RIGHT: PROPERTIES ─────────────────────────────────────────────────── */
+.ss-props {
+  width: 240px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  border-left: 1px solid rgba(245,241,235,0.04);
+  background: rgba(15,14,12,0.6);
+  padding: 16px 14px;
+  overflow-y: auto;
+}
+.ss-props::-webkit-scrollbar { width: 3px; }
+.ss-props::-webkit-scrollbar-thumb { background: rgba(245,241,235,0.06); border-radius: 2px; }
+
+.ss-props-content { display: flex; flex-direction: column; gap: 14px; }
+
+.ss-props-head {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 400;
+  color: #f5f1eb;
+}
+.ss-props-type {
+  font-size: 0.55rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: #c8602a;
+}
+
+.ss-props-section {
+  padding-top: 10px;
+  border-top: 1px solid rgba(245,241,235,0.04);
+}
+.ss-props-stitle {
+  font-size: 0.5rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(245,241,235,0.3);
+  margin-bottom: 10px;
+}
+
+.ss-props-btn {
+  width: 100%; padding: 8px;
+  border: 1px solid rgba(245,241,235,0.08); border-radius: 2px;
+  background: transparent; color: rgba(245,241,235,0.45);
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s;
+  margin-top: 6px;
+}
+.ss-props-btn:hover {
+  border-color: rgba(200,96,42,0.25); color: #c8602a;
+  background: rgba(200,96,42,0.05);
+}
+
+/* Clean Up button — special emphasis */
+.ss-cleanup-btn {
+  background: rgba(107,143,113,0.08) !important;
+  border-color: rgba(107,143,113,0.25) !important;
+  color: rgba(107,143,113,0.8) !important;
+  font-weight: 500;
+}
+.ss-cleanup-btn:hover {
+  background: rgba(107,143,113,0.15) !important;
+  border-color: rgba(107,143,113,0.4) !important;
+  color: #6b8f71 !important;
+}
+
+.ss-props-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: 6px;
+  color: rgba(245,241,235,0.2); font-size: 0.65rem;
+}
+.ss-props-sub { font-size: 0.55rem; color: rgba(245,241,235,0.15); }
+
+/* ── SCALE SLIDERS (Phase 2) ───────────────────────────────────────────── */
+.ss-scale-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+.ss-scale-row label {
+  font-size: 0.55rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(245,241,235,0.35);
+  width: 18px; flex-shrink: 0; text-align: center;
+}
+.ss-scale-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: rgba(245,241,235,0.08);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.ss-scale-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #f5f1eb;
+  border: 2px solid #0f0e0c;
+  box-shadow: 0 0 0 1px rgba(245,241,235,0.2);
+  cursor: grab;
+  transition: background 0.15s;
+}
+.ss-scale-row input[type="range"]::-webkit-slider-thumb:hover {
+  background: #c8602a;
+  box-shadow: 0 0 0 1px rgba(200,96,42,0.4);
+}
+.ss-scale-row input[type="range"]:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  background: #c8602a;
+}
+.ss-scale-row input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #f5f1eb;
+  border: 2px solid #0f0e0c;
+  cursor: grab;
+}
+.ss-scale-row span {
+  font-size: 0.55rem; color: rgba(245,241,235,0.45);
+  width: 36px; text-align: right; flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── BRUSH GRID (Phase 2) ──────────────────────────────────────────────── */
+.ss-brush-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.ss-brush-btn {
+  padding: 7px 6px;
+  border: 1px solid rgba(245,241,235,0.06);
+  border-radius: 2px;
+  background: rgba(245,241,235,0.015);
+  color: rgba(245,241,235,0.45);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.ss-brush-btn:hover {
+  background: rgba(245,241,235,0.03);
+  border-color: rgba(245,241,235,0.12);
+  color: rgba(245,241,235,0.7);
+}
+.ss-brush-btn.active {
+  background: rgba(200,96,42,0.1);
+  border-color: rgba(200,96,42,0.3);
+  color: #c8602a;
+}
+
+.ss-brush-info {
+  font-size: 0.55rem;
+  color: rgba(245,241,235,0.25);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  font-style: italic;
+  padding: 6px 8px;
+  border-left: 2px solid rgba(200,96,42,0.2);
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ss-inventory { width: 200px; }
+  .ss-props { width: 200px; }
+  .ss-inv-items { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .ss-body { flex-direction: column; }
+  .ss-inventory {
+    width: 100%; max-height: 200px;
+    border-right: none; border-bottom: 1px solid rgba(245,241,235,0.04);
+  }
+  .ss-props { display: none; }
+  .ss-inv-items { grid-template-columns: repeat(4, 1fr); }
+  .ss-tool-bar { margin-left: 8px; }
+}

@@ -9,7 +9,7 @@ CANONICAL = {
     "Armrest": "armrest",
     "egg_armrest": "armrest_egg",
     "sofa_armrest": "armrest_sofa",
-    "Eames_lounge": "eames_lounge_cushion",
+    "Eames_lounge": "eames_lounge",
     "Eames_base": "eames_base",
     "5_Star_Base": "five_star_base",
     "Caster_Wheel": "caster_wheel",
@@ -21,6 +21,13 @@ CANONICAL = {
     # labels to ignore (map to None)
     "AH_Label": None, "BH_Label": None, "DA_Label": None,
     "SD_Label": None, "SH_Label": None, "SW_Label": None,
+}
+SIGNATURE_PARTS = {
+    "wing_flanage": "Traditional Wing",
+    "eames_base": "Eames Lounge",
+    "five_star_base": "Professional Office",
+    "armrest_sofa": "Deep Comfort Sofa",
+    "armrest_egg": "Mid-Century Egg"
 }
 
 # Build a lowercase-keyed mapping for case-insensitive lookups
@@ -60,33 +67,41 @@ def normalize_parts(raw_detections: List[Dict[str, Any]]) -> set:
     return parts
 
 
-def classify_chair(parts: set) -> str:
+def classify_chair(parts: set) -> dict:
     """
-    Rule-based chair type classification using the canonical part set.
-    Returns a string label describing the predicted chair type.
+    Returns a dictionary containing the identified type and 
+    whether it is a custom hybrid.
     """
-    # Eames lounge
-    if {"eames_lounge_cushion", "eames_base", "headrest", "backrest"}.issubset(parts):
-        return "Eames Lounge Chair"
-
-    # Office / ergonomic chair
-    if ("five_star_base" in parts or "caster_wheel" in parts) and \
-       ("control_mechanism" in parts or "lumbar_support" in parts):
-        return "Ergonomic Office Chair"
-
-    # Sofa chair
-    if "sofa_armrest" in parts:
-        return "Sofa Chair"
-
-    # Egg chair
+    # Find which signature parts are in this specific sketch
+    found_signatures = [SIGNATURE_PARTS[p] for p in parts if p in SIGNATURE_PARTS]
+    
+    # 1. HYBRID CHECK (Concern 1)
+    if len(found_signatures) > 1:
+        return {
+            "type": "Custom Hybrid Chair",
+            "is_hybrid": True,
+            "influences": found_signatures
+        }
+    
+    # 2. STANDARD CHAIR CHECK
+    if "wing_flanage" in parts:
+        return {"type": "Wing Chair", "is_hybrid": False}
+    
+    if "five_star_base" in parts or "caster_wheel" in parts:
+        return {"type": "Ergonomic Office Chair", "is_hybrid": False}
+        
+    if "eames_base" in parts or "eames_lounge" in parts:
+        return {"type": "Eames Lounge Chair", "is_hybrid": False}
+    
+    if "armrest_sofa" in parts:
+        return {"type": "Sofa Armchair", "is_hybrid": False}
+    
     if "armrest_egg" in parts:
-        return "Egg Chair"
+        return {"type": "Egg Shell chair", "is_hybrid": False}
 
-    # Generic armchair
-    if "armrest" in parts and "seat" in parts and "backrest" in parts:
-        return "Armchair"
+    return {"type": "Standard Chair", "is_hybrid": False}
 
-    return "Unknown Chair Type"
+  
 
 
 def build_llama_prompt(image_id: str, parts: set, chair_type: str) -> str:
@@ -129,7 +144,7 @@ def classify_json(raw_json: List[Dict[str, Any]], image_id: str = "uploaded_imag
     return {
         "canonical_parts": sorted(list(parts)),
         "identified_type": chair_type,
-        "llama_prompt": prompt
+        "llama_prompt": prompt # SHOULD I REMOVE THIS?
     }
 
 

@@ -1,4 +1,11 @@
-# Logs
+# ─── Environment variables ───────────────────────────
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+
+# ─── Logs ────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,12 +14,36 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# ─── Node / Frontend ─────────────────────────────────
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# ─── Python / Backend ────────────────────────────────
+venv/
+env/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+
+# ─── Model weights & datasets ────────────────────────
+*.pt
+*.pth
+*.weights
+*.onnx
+runs/
+datasets/
+
+# ─── Uploads & generated output ──────────────────────
+uploads/
+temp/
+output/
+
+# ─── Editor directories and files ────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
