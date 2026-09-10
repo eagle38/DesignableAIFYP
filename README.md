@@ -31,6 +31,45 @@ From there the design stays live. Parts can be reshaped and the ergonomic conseq
 
 ---
 
+## SCREENSHOTS
+## HOME SCREEN
+<img width="1600" height="835" alt="PHOTO-2026-09-10-14-30-04" src="https://github.com/user-attachments/assets/6a347211-ce15-43f4-8d2c-6c72c3e81ca6" />
+
+<img width="1600" height="783" alt="PHOTO-2026-09-10-14-32-43" src="https://github.com/user-attachments/assets/9d1d343b-ed3e-4e01-8359-f4abbc37b790" />
+
+
+## DASHBOARD AND MULTI PANEL CAROUSEL
+<img width="1600" height="825" alt="WhatsApp Image 2026-09-10 at 14 37 55 (1)" src="https://github.com/user-attachments/assets/53b82312-095a-49ce-9a4d-eadfa8de5e14" />
+
+<img width="1600" height="835" alt="WhatsApp Image 2026-09-10 at 14 37 55" src="https://github.com/user-attachments/assets/a97c130c-1d32-49d6-91d0-aaaff4ccf5f7" />
+
+## MATERIAL ENGINE
+<img width="1600" height="827" alt="WhatsApp Image 2026-09-10 at 14 37 55 (3)" src="https://github.com/user-attachments/assets/dd9e3595-c0e5-4bb9-a945-2e3f5091e815" />
+
+## ROOM PREVIEW
+<img width="1600" height="828" alt="WhatsApp Image 2026-09-10 at 14 37 55 (2)" src="https://github.com/user-attachments/assets/56e364ba-4c50-491a-9a27-080bc86654e3" />
+
+## 3D SCULPT STUDIO - DESIGN ANY IMAGINABLE FURNITURE
+<img width="1600" height="833" alt="PHOTO-2026-09-10-14-40-44" src="https://github.com/user-attachments/assets/46b21138-5550-4b15-b89c-241933882acd" />
+
+<img width="1600" height="827" alt="PHOTO-2026-09-10-14-41-23" src="https://github.com/user-attachments/assets/743b61ba-6525-4e91-8e4d-f951e05dd29f" />
+
+<img width="1600" height="827" alt="PHOTO-2026-09-10-14-42-09" src="https://github.com/user-attachments/assets/11045347-a552-456c-84ec-f0975c991af8" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Tech Stack
 
 **Frontend**
